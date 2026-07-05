@@ -1,6 +1,5 @@
 import csv
 
-# File paths for now (we'll turn these into a proper CLI later in the week)
 INPUT_FILE = "sample_data/messy_clients.csv"
 
 
@@ -23,15 +22,13 @@ def clean_row(row):
 
 
 def main():
-    # Load the messy data
     rows = load_csv(INPUT_FILE)
     print(f"Loaded {len(rows)} rows from {INPUT_FILE}")
 
-    # Clean each row
     cleaned_rows = [clean_row(row) for row in rows]
 
-    # Show the first cleaned row so we can see it worked
     print(f"First cleaned row: {cleaned_rows[0]}")
+    print(f"Last cleaned row: {cleaned_rows[-1]}")
 
 
 if __name__ == "__main__":
