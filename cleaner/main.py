@@ -1,17 +1,18 @@
+import argparse
+
 """Main entry point: runs the cleaning pipeline."""
 
 from cleaner.normalisers import clean_row
 from cleaner.validators import validate_row
 from cleaner.io_helpers import load_csv, write_csv, strip_internal_fields
 
+CLEAN_FIELDS = ['name', 'email', 'phone', 'dob', 'suburb']
+REVIEW_FIELDS = CLEAN_FIELDS + ['reason']
 
-def main():
-    input_file = "sample_data/messy_clients.csv"
-    clean_output = "output/clean.csv"
-    review_output = "output/review.csv"
 
-    rows = load_csv(input_file)
-    print(f"Loaded {len(rows)} rows from {input_file}")
+def process(input_path, clean_output, review_output):
+    """Load, clean, validate and route rows. Returns (clean_count, review_count)."""
+    rows = load_csv(input_path)
 
     clean_rows = []
     review_rows = []
@@ -44,14 +45,43 @@ def main():
     clean_out = [strip_internal_fields(r) for r in clean_rows]
     review_out = [strip_internal_fields(r) for r in review_rows]
 
-    write_csv(clean_output, clean_out, ['name', 'email', 'phone', 'dob', 'suburb'])
-    write_csv(review_output, review_out, ['name', 'email', 'phone', 'dob', 'suburb', 'reason'])
+    write_csv(clean_output, clean_out, CLEAN_FIELDS)
+    write_csv(review_output, review_out, REVIEW_FIELDS)
 
-    print("-" * 40)
-    print(f"Clean rows:  {len(clean_rows)} → {clean_output}")
-    print(f"Review rows: {len(review_rows)} → {review_output}")
-    print(f"Total:       {len(clean_rows) + len(review_rows)}")
+    return len(clean_rows), len(review_rows)
 
+def main():
+    parser = argparse.ArgumentParser(
+        description="Clean and validate a customer CSV export for migration."
+    )
+    parser.add_argument("input", help="Path to the messy input CSV")
+    parser.add_argument(
+        "--clean-output",
+        default="output/clean.csv",
+        help="Path for the cleaned output file (default: output/clean.csv)"
+    )
+    parser.add_argument(
+        "--review-output",
+        default="output/review.csv",
+        help="Path for the review output file (default: output/review.csv)"
+    )
+
+    args = parser.parse_args()
+
+    clean_count, review_count = process(
+        args.input,
+        args.clean_output,
+        args.review_output
+    )
+
+    print("=" * 50)
+    print("MIGRATION CLEANER REPORT")
+    print("=" * 50)
+    print(f"Input file:      {args.input}")
+    print(f"Clean output:    {args.clean_output} ({clean_count} rows)")
+    print(f"Review output:   {args.review_output} ({review_count} rows)")
+    print(f"Total processed: {clean_count + review_count} rows")
+    print("=" * 50)
 
 if __name__ == "__main__":
     main()
