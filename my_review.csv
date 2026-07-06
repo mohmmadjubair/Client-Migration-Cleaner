@@ -1,0 +1,8 @@
+name,email,phone,dob,suburb,reason
+Lisa Brown,lisa@gmail,+61412345678,15-03-1985,Glenelg,Invalid email format
+Sarah Chen,sarah@example.com,+61412345678,15/03/1985,Adelaide,Duplicate email (first seen in row 2)
+Michael Jones,,+61400000001,1985/03/15,Prospect,Missing email
+,david@example.com,+61422111222,15/3/85,Unley,Missing name
+Dr Sarah Chen,sarah@example.com,+61412345678,15/03/1985,Adelaide,Duplicate email (first seen in row 2)
+Robert Lee,robert@@example.com,+61881234567,15/03/1985,Burnside,Invalid email format
+Sophie Wong,sophie.wong@example.com,phone number,1985-3-15,Henley Beach,Invalid phone number
